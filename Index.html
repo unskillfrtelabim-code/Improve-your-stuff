@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Turtle WoW - Optimisation Horde Edition</title>
+    <style>
+        :root {
+            --horde-red: #8c1616;
+            --horde-gold: #c49424;
+            --horde-dark: #1a1714;
+            --wow-border: #3d352d;
+            --link-color: #ffb100;
+        }
+
+        body {
+            /* Ton nouveau fond : Orc sur le trône */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                        url('https://blz-contentstack-images.akamaized.net/v3/assets/blt3452e3b114fab0cd/blt5d46121d08d94b30/605e5599911af80d191d9c1c/V85N8S40SOP21472165796697.jpg?auto=webp&quality=75');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #e1e1e1;
+            font-family: 'LifeCraft', 'Segoe UI', serif;
+            display: flex;
+            justify-content: center;
+            padding: 30px;
+            margin: 0;
+        }
+
+        /* Cadre principal avec bordures rivetées */
+        .main-container {
+            display: flex;
+            background: rgba(26, 23, 20, 0.92);
+            border: 5px solid #3d352d;
+            outline: 2px solid #1a1714;
+            padding: 30px;
+            border-radius: 4px;
+            gap: 30px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(140, 22, 22, 0.2);
+            position: relative;
+            margin-top: 50px;
+        }
+
+        /* Titre style WoW */
+        h1 {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--horde-gold);
+            text-shadow: 3px 3px 5px #000;
+            font-size: 2.2em;
+            width: 100%;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Feuille de Personnage */
+        .char-sheet {
+            width: 420px;
+            height: 620px;
+            background: rgba(10, 10, 10, 0.85);
+            border: 3px solid #2a241e;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 0 30px #000;
+        }
+
+        .grid { display: flex; justify-content: space-between; }
+        .column { display: flex; flex-direction: column; gap: 15px; }
+
+        /* Slots Style Bouton WoW Interface */
+        .slot {
+            width: 90px; 
+            height: 55px;
+            background: linear-gradient(#2c2621, #1a1714);
+            border: 2px solid #4e443a;
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 12px;
+            color: #ada194;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 2px 2px 5px #000;
+        }
+
+        .slot:hover { 
+            border-color: var(--horde-red);
+            box-shadow: 0 0 15px var(--horde-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .weapons {
+            display: flex; 
+            justify-content: center; 
+            gap: 12px;
+            border-top: 2px solid #3d352d; 
+            padding-top: 20px;
+        }
+
+        /* Panneau de détails */
+        #details {
+            width: 520px; 
+            height: 620px;
+            background: rgba(20, 18, 16, 0.95);
+            border: 3px solid #2a241e;
+            padding: 20px; 
+            overflow-y: auto;
+            scrollbar-color: var(--horde-red) #111;
+        }
+
+        /* Accordéon style Horde */
+        .card {
+            background: #25211e;
+            border-left: 5px solid var(--horde-red);
+            margin-bottom: 10px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 3px 3px 10px #000;
+        }
+
+        .card:hover { background: #352f2a; border-left-color: var(--horde-gold); }
+
+        .card-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-name { font-weight: bold; color: #f0ebe0; }
+
+        .card-body {
+            padding: 0 15px 15px 15px;
+            display: none;
+            border-top: 1px solid #3d352d;
+            background: #1a1714;
+        }
+
+        .card.active .card-body { display: block; }
+        .card.active { border-left-color: var(--horde-gold); }
+
+        .db-link {
+            color: var(--link-color); text-decoration: none;
+            font-weight: bold; font-size: 0.9em;
+            display: inline-block; margin-top: 12px;
+        }
+
+        .db-link:hover { text-decoration: underline; color: white; }
+
+        .badge {
+            font-size: 10px; padding: 3px 8px; border-radius: 2px;
+            font-weight: bold; text-transform: uppercase;
+            box-shadow: 1px 1px 3px #000;
+        }
+
+        .mats { 
+            color: #4edb6a; font-size: 13px; display: block; 
+            margin-top: 10px; font-style: italic; line-height: 1.6;
+        }
+        
+        h2 { color: var(--horde-gold); border-bottom: 2px solid var(--horde-red); padding-bottom: 10px; }
+        .no-data { color: #7a6f64; text-align: center; margin-top: 150px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <h1>Unskill (Fr) - Turtle WoW - Tel'Abim (Horde)</h1>
+    
+    <div class="char-sheet">
+        <div class="grid">
+            <div class="column left-col">
+                <div class="slot" onclick="show('head')">Tête</div>
+                <div class="slot" onclick="show('neck')">Collier</div>
+                <div class="slot" onclick="show('shoulder')">Épaules</div>
+                <div class="slot" onclick="show('back')">Cape</div>
+                <div class="slot" onclick="show('chest')">Torse</div>
+                <div class="slot" onclick="show('wrist')">Brassards</div>
+            </div>
+            <div class="column right-col">
+                <div class="slot" onclick="show('hands')">Gants</div>
+                <div class="slot" onclick="show('waist')">Ceinture</div>
+                <div class="slot" onclick="show('legs')">Jambes</div>
+                <div class="slot" onclick="show('feet')">Bottes</div>
+                <div class="slot" onclick="show('finger')">Anneaux</div>
+            </div>
+        </div>
+        <div class="weapons">
+            <div class="slot" onclick="show('weapon_1h')">Arme 1M</div>
+            <div class="slot" onclick="show('weapon_2h')">Arme 2M</div>
+            <div class="slot" onclick="show('offhand')">Bouclier</div>
+            <div class="slot" onclick="show('ranged')">Distance</div>
+        </div>
+    </div>
+
+    <div id="details">
+        <h2>Améliorations</h2>
+        <p class="no-data">Cliquez sur un emplacement d'équipement pour visualiser les améliorations disponibles.</p>
+    </div>
+</div>
+
+<script>
+const database = {
+  "head": [
+    { "prof": "Quête", "name": "Libram +100 PV", "url": "https://database.turtlecraft.gg/?item=11642", "mats": "Quest" },
+    { "prof": "Enchantement", "name": "Enchant ZG", "url": "https://database.turtlecraft.gg/?item=22637", "mats": "Zul'Gurub (Primal Hakkari Idol + Class Doll)" },
+    { "prof": "Quête", "name": "Libram +12 Healing & Spell damage", "url": "https://database.turtlecraft.gg/?item=18330", "mats": "Quest" },
+    { "prof": "Quête", "name": "Libram +8 agi", "url": "https://database.turtlecraft.gg/?item=11647", "mats": "Quest" },
+    { "prof": "Quête", "name": "Libram +8 force", "url": "https://database.turtlecraft.gg/?item=11645", "mats": "Quest" }
+  ],
+  "neck": [
+    { "prof": "Joaillerie", "name": "Gemme +6 Arcane Damage", "url": "https://database.turtlecraft.gg/?item=56058", "mats": "1x Pure Moonstone - 5x Heavy Gritted Paper - 1x Gemstone Oil " },
+    { "prof": "Joaillerie", "name": "Gemme +9 Frost Damage", "url": "https://database.turtlecraft.gg/?item=56057", "mats": "1x Blue Sapphire - 4x Wintersbite - 1x Elemental Water - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +5 Spell Damage", "url": "https://database.turtlecraft.gg/?item=56016", "mats": "1x Arcane Crystal - 1x Huge Emerald - 1x Large Brilliant Shard - 2x Dense Gritted Paper - 1x Enchanted Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +6 Strength", "url": "https://database.turtlecraft.gg/?item=56015", "mats": "1x Azerothian Ruby Gemstone - 1x Star Ruby - 1x Greater Eternal Essence - 1x Dense Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +3 All Stats", "url": "https://database.turtlecraft.gg/?item=56014", "mats": "1x Imperial Topaz - 1x Large Brilliant Shard - 4x Purple Lotus - 1x Core of Earth - 1x Enchanted Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +12 Healing Power", "url": "https://database.turtlecraft.gg/?item=56010", "mats": "2x Azerothian Diamond - 2x Heavy Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +6 Agility", "url": "https://database.turtlecraft.gg/?item=56008", "mats": "2x Large Opal - 1x Solid Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +9 Nature Power", "url": "https://database.turtlecraft.gg/?item=56018", "mats": "1x Huge Emerald - 3x Breath of Wind - 1x Heavy Gritted Paper - 1x Gemstone Oil" }
+  ],
+  "shoulder": [
+    { "prof": "Enchantement", "name": "Enchant ZG (30AP / 18SP / 33HP / 14 Stam)", "url": "https://database.turtlecraft.gg/?search=zandalar+signet", "mats": "Exalted with Zandalar Tribe - 15x Zandalar Honor Token" },
+    { "prof": "Enchantement", "name": "Enchant Sapphiron", "url": "https://database.turtlecraft.gg/?search=of+the+scourge", "mats": "Drop Sapphiron (Naxxramas)" },
+    { "prof": "Quête", "name": "Sigil of Quickness", "url": "https://database.turtlecraft.gg/?item=61437", "mats": "Quest Hyjal - 5x Bright Dream Shard - 1x Fading Dream Fragment" }
+  ],
+  "back": [
+    { "prof": "Enchantement", "name": "Enchant 3 Agility", "url": "https://database.turtlecraft.gg/?item=11206", "mats": "2x Lesser Nether Essence" },
+    { "prof": "Enchantement", "name": "Enchant 70 Armor", "url": "https://database.turtlecraft.gg/?item=16224", "mats": "8x Illusion Dust" },
+    { "prof": "Enchantement", "name": "Enchant +5 All Resistance", "url": "https://database.turtlecraft.gg/?item=16216", "mats": "2x Lesser Eternal Essence - 1x Heart of Fire - 1x Core of Earth - 1x Globe of Water - 1x Breath of Wind - 1x Ichor of Undeath" },
+    { "prof": "Enchantement", "name": "Enchant -2% Threat", "url": "https://database.turtlecraft.gg/?item=20735", "mats": "4x Nexus Crystal - 6x Large Brilliant Shard - 2x Black Diamond" }
+  ],
+  "chest": [
+    { "prof": "Travail du Cuir", "name": "Enchanted Armor Kit (+9 HP/SP)", "url": "https://database.turtlecraft.gg/?item=61183", "mats": "3x Enchanted Leather - 3x Arcane Essence - 2x Rune Thread" },
+    { "prof": "Enchantement", "name": "Enchant +4 all carac", "url": "https://database.turtlecraft.gg/?item=16253", "mats": "4x Large Brilliant Shard - 15x Illusion Dust - 10x Greater Eternal Essence" },
+    { "prof": "Enchantement", "name": "Enchant +150 mana", "url": "https://database.turtlecraft.gg/?item=61217", "mats": "6x Large Brilliant Shard - 40x Illusion Dust" }
+  ],
+  "wrist": [
+    { "prof": "Enchantement", "name": "Enchant +9 Stam", "url": "https://database.turtlecraft.gg/?item=16251", "mats": "15x Illusion Dust" },
+    { "prof": "Enchantement", "name": "Enchant +12 Spell Power", "url": "https://database.turtlecraft.gg/?item=60966", "mats": "2x Large Brilliant Shard - 10x Illusion Dust - 3x Essence of Earth - 3x Essence of Air" },
+    { "prof": "Enchantement", "name": "Enchant +7 Agility", "url": "https://database.turtlecraft.gg/?item=60969", "mats": "3x Large Brilliant Shard - 1x Greater Eternal Essence - 2x Essence of Air - 2x Essence of Earth" },
+    { "prof": "Enchantement", "name": "Enchant +9 Strength", "url": "https://database.turtlecraft.gg/?item=16246", "mats": "6x Illusion Dust - 6x Greater Eternal Essence" },
+    { "prof": "Enchantement", "name": "Enchant +24 Healing Power", "url": "https://database.turtlecraft.gg/?item=19447", "mats": "2x Large Brilliant Shard - 20x Illusion Dust - 4x Greater Eternal Essence - 1x Living Essence" },
+    { "prof": "Enchantement", "name": "Enchant +4 Mp5", "url": "https://database.turtlecraft.gg/?item=19446", "mats": "16x Illusion Dust - 4x Greater Eternal Essence - 2x Essence of Water" }
+  ],
+  "hands": [
+    { "prof": "Travail du Cuir", "name": "Enchanted Armor Kit (+9 HP/SP)", "url": "https://database.turtlecraft.gg/?item=61183", "mats": "3x Enchanted Leather - 3x Arcane Essence - 2x Rune Thread" },
+    { "prof": "Enchantement", "name": "Enchant +20 Arcane power", "url": "https://database.turtlecraft.gg/?item=70001", "mats": "2x Nexus Crystal - 10x Large Brilliant Shard - 4x Greater Eternal Essence" },
+    { "prof": "Enchantement", "name": "Enchant +20 Fire Power", "url": "https://database.turtlecraft.gg/?item=20729", "mats": "2x Nexus Crystal - 10x Large Brilliant Shard - 4x Essence of Fire" },
+    { "prof": "Enchantement", "name": "Enchant +20 Frost Power", "url": "https://database.turtlecraft.gg/?item=20728", "mats": "2x Nexus Crystal - 10x Large Brilliant Shard - 4x Essence of Water" },
+    { "prof": "Enchantement", "name": "Enchant +30 Healing Power", "url": "https://database.turtlecraft.gg/?item=20730", "mats": "2x Nexus Crystal - 8x Large Brilliant Shard - 1x Righteous Orb" },
+    { "prof": "Enchantement", "name": "Enchant +9 Strength", "url": "https://database.turtlecraft.gg/?item=16246", "mats": "6x Illusion Dust - 6x Greater Eternal Essence" },
+    { "prof": "Enchantement", "name": "Enchant +20 Nature Power", "url": "https://database.turtlecraft.gg/?item=70000", "mats": "2x Nexus Crystal - 10x Large Brilliant Shard - 2x Essence of Air - 2x Essence or Earth" },
+    { "prof": "Enchantement", "name": "Enchant +20 Shadow Power", "url": "https://database.turtlecraft.gg/?item=20727", "mats": "3x Nexus Crystal - 10x Large Brilliant Shard - 6x Essence of Undeath" },
+    { "prof": "Enchantement", "name": "Enchant +15 Agility", "url": "https://database.turtlecraft.gg/?item=20731", "mats": "3x Nexus Crystal - 8x Large Brilliant Shard - 4x Essence of Air" },
+    { "prof": "Enchantement", "name": "Enchant +Threat", "url": "https://database.turtlecraft.gg/?item=20726", "mats": "4x Nexus Crystal - 6x Large Brilliant Shard - 8x Larval Acid" }
+  ],
+  "waist": [
+    { "prof": "Forge", "name": "Belt Buckle +10 Intel", "url": "https://database.turtlecraft.gg/?item=61785", "mats": "2x Dreamsteel Bar - 2x Dense Grinding Stone - 1x Essence of Earth - 1x Living Essence" },
+    { "prof": "Forge", "name": "Belt Buckle +10 Strength", "url": "https://database.turtlecraft.gg/?item=103", "mats": "2x Large Obsidian Shard - 1x Iron Buckle - 1x Essence of Earth - 1x Essence of Air - 2x Dense Grinding Stone" },
+    { "prof": "Forge", "name": "Belt Buckle +9 Fire Power", "url": "https://database.turtlecraft.gg/?item=67", "mats": "4x Thorium Bar - 1x Iron Buckle - 14x Worn Dragonscale - 1x Solid Grinding Stone" },
+    { "prof": "Forge", "name": "Belt Buckle +14 Ranged AP", "url": "https://database.turtlecraft.gg/?item=66", "mats": "8x Gold Bar - 1x Iron Buckle - 2x Heavy Grinding Stone" },
+    { "prof": "Forge", "name": "Belt Buckle +25 Armor Pen", "url": "https://database.turtlecraft.gg/?item=61781", "mats": "8x Iron Bar - 1x Iron Buckle - 2x Heavy Grinding Stone" },
+    { "prof": "Forge", "name": "Belt Buckle +6 Agility", "url": "https://database.turtlecraft.gg/?item=61782", "mats": "8x Mithril Bar - 1x Iron Buckle - 2x Solid Grinding Stone - 1x Truesilver Bar" },
+    { "prof": "Forge", "name": "Belt Buckle +8 Heal Power", "url": "https://database.turtlecraft.gg/?item=151", "mats": "8x Truesilver Bar - 1x Iron Buckle - 2x Solid Grinding Stone" }
+  ],
+  "legs": [
+    { "prof": "Travail du Cuir", "name": "Enchanted Armor Kit (+9 HP/SP)", "url": "https://database.turtlecraft.gg/?item=61183", "mats": "3x Enchanted Leather - 3x Arcane Essence - 2x Rune Thread" },
+    { "prof": "Quête", "name": "Libram +100 PV", "url": "https://database.turtlecraft.gg/?item=11642", "mats": "Quest" },
+    { "prof": "Quête", "name": "Libram +12 Healing & Spell damage", "url": "https://database.turtlecraft.gg/?item=18330", "mats": "Quest" },
+    { "prof": "Quête", "name": "Libram +8 agi", "url": "https://database.turtlecraft.gg/?item=11647", "mats": "Quest" },
+    { "prof": "Quête", "name": "Libram +8 force", "url": "https://database.turtlecraft.gg/?item=11645", "mats": "Quest" }
+  ],
+  "feet": [
+    { "prof": "Travail du Cuir", "name": "Enchanted Armor Kit (+9 HP/SP)", "url": "https://database.turtlecraft.gg/?item=61183", "mats": "3x Enchanted Leather - 3x Arcane Essence - 2x Rune Thread" },
+    { "prof": "Enchantement", "name": "Enchant +12 Spirit", "url": "https://database.turtlecraft.gg/?item=61220", "mats": "5x Greater Eternal Essence" },
+    { "prof": "Enchantement", "name": "Enchant +9 Intel", "url": "https://database.turtlecraft.gg/?item=55044", "mats": "15x Illusion Dust - 4x Greater Eternal Essence - 2x Large Brilliant Shard - 1x Nexus Crystal" },
+    { "prof": "Enchantement", "name": "Enchant +15 Stam", "url": "https://database.turtlecraft.gg/?item=61219", "mats": "6x Greater Eternal Essence - 2x Gromsblood" },
+    { "prof": "Enchantement", "name": "Enchant +7 Agility", "url": "https://database.turtlecraft.gg/?item=60969", "mats": "3x Large Brilliant Shard - 1x Greater Eternal Essence - 2x Essence of Air - 2x Essence of Earth" }
+  ],
+  "finger": [
+    { "prof": "Joaillerie", "name": "Gemme +6 Arcane Damage", "url": "https://database.turtlecraft.gg/?item=56058", "mats": "1x Pure Moonstone - 5x Heavy Gritted Paper - 1x Gemstone Oil " },
+    { "prof": "Joaillerie", "name": "Gemme +9 Frost Damage", "url": "https://database.turtlecraft.gg/?item=56057", "mats": "1x Blue Sapphire - 4x Wintersbite - 1x Elemental Water - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +5 Spell Damage", "url": "https://database.turtlecraft.gg/?item=56016", "mats": "1x Arcane Crystal - 1x Huge Emerald - 1x Large Brilliant Shard - 2x Dense Gritted Paper - 1x Enchanted Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +6 Strength", "url": "https://database.turtlecraft.gg/?item=56015", "mats": "1x Azerothian Ruby Gemstone - 1x Star Ruby - 1x Greater Eternal Essence - 1x Dense Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +3 All Stats", "url": "https://database.turtlecraft.gg/?item=56014", "mats": "1x Imperial Topaz - 1x Large Brilliant Shard - 4x Purple Lotus - 1x Core of Earth - 1x Enchanted Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +12 Healing Power", "url": "https://database.turtlecraft.gg/?item=56010", "mats": "2x Azerothian Diamond - 2x Heavy Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +6 Agility", "url": "https://database.turtlecraft.gg/?item=56008", "mats": "2x Large Opal - 1x Solid Gritted Paper - 1x Gemstone Oil" },
+    { "prof": "Joaillerie", "name": "Gemme +9 Nature Power", "url": "https://database.turtlecraft.gg/?item=56018", "mats": "1x Huge Emerald - 3x Breath of Wind - 1x Heavy Gritted Paper - 1x Gemstone Oil" }
+  ],
+  "weapon_1h": [
+    { "prof": "Enchantement", "name": "Enchant +55 Healing Power", "url": "https://database.turtlecraft.gg/?item=18260", "mats": "4x Large Brilliant Shard - 8x Greater Eternal Essence - 6x Living Essence - 6x Essence of Water - 1x Righteous Orb" },
+    { "prof": "Enchantement", "name": "Enchant +30 Spell Damage", "url": "https://database.turtlecraft.gg/?item=18259", "mats": "4x Large Brilliant Shard - 12x Greater Eternal Essence - 4x Essence of Fire - 4x Essence of Water - 4x Essence of Air - 2x Golden Pearl" },
+    { "prof": "Enchantement", "name": "Enchant Crusader", "url": "https://database.turtlecraft.gg/?item=16252", "mats": "4x Large Brilliant Shard - 2x Righteous Orb" },
+    { "prof": "Enchantement", "name": "Enchant +15 Agility", "url": "https://database.turtlecraft.gg/?item=20731", "mats": "3x Nexus Crystal - 8x Large Brilliant Shard - 4x Essence of Air" },
+    { "prof": "Enchantement", "name": "Enchant +20 spirit", "url": "https://database.turtlecraft.gg/?item=19448", "mats": "10x Large Brilliant Shard - 8x Greater Eternal Essence - 15x Illusion Dust" }
+  ],
+  "weapon_2h": [
+    { "prof": "Enchantement", "name": "Enchant +25 Agility", "url": "https://database.turtlecraft.gg/?item=22392", "mats": "10x Large Brilliant Shard - 6x Greater Eternal Essence - 14x Illusion Dust - 4x Essence of Air" }
+  ],
+  "offhand": [
+    { "prof": "Enchantement", "name": "Enchant +5 Stam", "url": "https://database.turtlecraft.gg/?item=11202", "mats": "5x Vision Dust" },
+    { "prof": "Enchantement", "name": "Enchant +2% bloc", "url": "https://database.turtlecraft.gg/?item=11168", "mats": "2x Greater Mystic Essence - 2x Vision Dust - 1x Large Glowing Shard" }
+  ],
+  "ranged": [
+    { "prof": "Ingénierie", "name": "Ingé +3% Hit Ranged Attack", "url": "https://database.turtlecraft.gg/?item=18283", "mats": "2x Lave Core - 2x Essence of Earth - 4x Delicate Arcanite Converter - 6x Dark Iron Bar - 1x Thorium Tube" }
+  ]
+};
+
+function show(slot) {
+    const panel = document.getElementById('details');
+    const items = database[slot];
+    let html = `<h2>${slot.toUpperCase().replace('_', ' ')}</h2>`;
+    
+    if (!items || items.length === 0) {
+        html += `<p class="no-data">Aucun parchemin disponible, soldat.</p>`;
+    } else {
+        items.forEach((item, index) => {
+            html += `
+                <div class="card" onclick="toggleAccordion(this)">
+                    <div class="card-header">
+                        <span class="card-name">${item.name}</span>
+                        <span class="badge" style="background:${getBadgeColor(item.prof)}">${item.prof}</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="mats"><strong>Ressources :</strong><br>${item.mats}</span>
+                        <a href="${item.url}" target="_blank" class="db-link" onclick="event.stopPropagation()">Examiner l'objet ↗</a>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    panel.innerHTML = html;
+}
+
+function toggleAccordion(element) {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(c => { if (c !== element) c.classList.remove('active'); });
+    element.classList.toggle('active');
+}
+
+function getBadgeColor(p) {
+    const colors = { 'Joaillerie': '#4a90e2', 'Enchantement': '#9b59b6', 'Forge': '#7f8c8d', 'Travail du Cuir': '#d35400', 'Quête': '#e67e22', 'Ingénierie': '#c0392b' };
+    return colors[p] || '#333';
+}
+</script>
+</body>
+</html>
