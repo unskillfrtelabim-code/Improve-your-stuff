@@ -212,7 +212,7 @@
 const database = {
   "head": [
     { "prof": "Quête", "name": "Gift of Ferocity (Drood Only)", "url": "https://database.turtlecraft.gg/?item=61081", "mats": "Quest Moonglade - 3x Bright Dream Shard" },
-    { "prof": "Enchantement", "name": "Enchant ZG", "url": "https://database.turtlecraft.gg/?item=22637", "mats": "Zul'Gurub (Primal Hakkari Idol + Class Doll)" },
+    { "prof": "Drop", "name": "Enchant ZG", "url": "https://database.turtlecraft.gg/?item=22637", "mats": "Zul'Gurub (Primal Hakkari Idol + Class Doll)" },
     { "prof": "Quête", "name": "Libram +100 PV", "url": "https://database.turtlecraft.gg/?item=11642", "mats": "Quest" },
     { "prof": "Quête", "name": "Libram +12 Healing & Spell damage", "url": "https://database.turtlecraft.gg/?item=18330", "mats": "Quest" },
     { "prof": "Quête", "name": "Libram +8 agi", "url": "https://database.turtlecraft.gg/?item=11647", "mats": "Quest" },
@@ -229,9 +229,9 @@ const database = {
     { "prof": "Joaillerie", "name": "Gemme +9 Nature Power", "url": "https://database.turtlecraft.gg/?item=56018", "mats": "1x Huge Emerald - 3x Breath of Wind - 1x Heavy Gritted Paper - 1x Gemstone Oil" }
   ],
   "shoulder": [
-    { "prof": "Enchantement", "name": "Enchant ZG (30AP / 18SP / 33HP / 14 Stam)", "url": "https://database.turtlecraft.gg/?search=zandalar+signet", "mats": "Exalted with Zandalar Tribe - 15x Zandalar Honor Token" },
-    { "prof": "Enchantement", "name": "Enchant Sapphiron", "url": "https://database.turtlecraft.gg/?search=of+the+scourge", "mats": "Drop Sapphiron (Naxxramas)" },
-    { "prof": "Quête", "name": "Sigil of Quickness", "url": "https://database.turtlecraft.gg/?item=61437", "mats": "Quest Hyjal - 5x Bright Dream Shard - 1x Fading Dream Fragment" }
+    { "prof": "Quête", "name": "Enchant ZG (30AP / 18SP / 33HP / 14 Stam)", "url": "https://database.turtlecraft.gg/?search=zandalar+signet", "mats": "Exalted with Zandalar Tribe - 15x Zandalar Honor Token" },
+    { "prof": "Quête", "name": "Sigil of Quickness", "url": "https://database.turtlecraft.gg/?item=61437", "mats": "Quest Hyjal - 5x Bright Dream Shard - 1x Fading Dream Fragment" },
+    { "prof": "Drop", "name": "Enchant Sapphiron", "url": "https://database.turtlecraft.gg/?search=of+the+scourge", "mats": "Drop Sapphiron (Naxxramas)" }
   ],
   "back": [
     { "prof": "Enchantement", "name": "Enchant 3 Agility", "url": "https://database.turtlecraft.gg/?item=11206", "mats": "2x Lesser Nether Essence" },
@@ -274,7 +274,7 @@ const database = {
     { "prof": "Forge", "name": "Belt Buckle +8 Heal Power", "url": "https://database.turtlecraft.gg/?item=151", "mats": "8x Truesilver Bar - 1x Iron Buckle - 2x Solid Grinding Stone" }
   ],
   "legs": [
-    { "prof": "Enchantement", "name": "Enchant ZG", "url": "https://database.turtlecraft.gg/?item=22637", "mats": "Zul'Gurub (Primal Hakkari Idol + Class Doll)" },
+    { "prof": "Drop", "name": "Enchant ZG", "url": "https://database.turtlecraft.gg/?item=22637", "mats": "Zul'Gurub (Primal Hakkari Idol + Class Doll)" },
     { "prof": "Travail du Cuir", "name": "Enchanted Armor Kit (+9 HP/SP)", "url": "https://database.turtlecraft.gg/?item=61183", "mats": "3x Enchanted Leather - 3x Arcane Essence - 2x Rune Thread" },
     { "prof": "Quête", "name": "Libram +100 PV", "url": "https://database.turtlecraft.gg/?item=11642", "mats": "Quest" },
     { "prof": "Quête", "name": "Libram +12 Healing & Spell damage", "url": "https://database.turtlecraft.gg/?item=18330", "mats": "Quest" },
@@ -350,12 +350,13 @@ function toggleAccordion(element) {
 }
 
 function getBadgeColor(p) {
-    const colors = { 'Joaillerie': '#4a90e2', 'Enchantement': '#9b59b6', 'Forge': '#7f8c8d', 'Travail du Cuir': '#d35400', 'Quête': '#e67e22', 'Ingénierie': '#c0392b' };
+    const colors = { 'Joaillerie': '#4a90e2', 'Enchantement': '#9b59b6', 'Forge': '#7f8c8d', 'Travail du Cuir': '#d35400', 'Quête': '#e67e22','Drop': '#9822E6', 'Ingénierie': '#c0392b' };
     return colors[p] || '#333';
 }
 </script>
 </body>
 </html>
+
 
 
 
